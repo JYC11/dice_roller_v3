@@ -1,11 +1,15 @@
 import re
 from typing import Any
 
-from enums.enums import Commands, DiceRegexes
+from enums.enums import Commands, DiceRegexes, CompileValidationResults
 
 
-def validator(raw_user_input: str):
-    return
+# DICE COMPILER
+def validator(raw_user_input: str) -> bool:
+    dice: list[str] = re.findall(DiceRegexes.DICE.value, raw_user_input)
+    if len(dice) == 0:
+        return CompileValidationResults.COMPILE_IMPOSSIBLE.value
+    return CompileValidationResults.COMPILE_POSSIBLE.value
 
 
 def extract_prefix(raw_user_input: str, command_dict: dict) -> dict:
@@ -40,11 +44,13 @@ def get_multiplier(raw_user_input: str, command_dict: dict) -> dict:
     )
     return command_dict
 
+
 def get_dice(raw_user_input: str, command_dict: dict) -> dict:
     dice: list[str] = re.findall(DiceRegexes.DICE.value, raw_user_input)
     command_dict["dice_count"] = int(dice[0].split("d")[0]) if dice else 1
     command_dict["dice_size"] = int(dice[0].split("d")[1]) if dice else 1
     return command_dict
+
 
 def get_modifier(raw_user_input: str, command_dict: dict) -> dict:
     modifier: list[str] = re.findall(DiceRegexes.MODIFIER.value, raw_user_input)
@@ -74,3 +80,7 @@ def compile_raw_user_input(raw_user_input: str):
     commands: list[str] = raw_user_input.split(",")
     commands_list: list[dict] = [create_command_object(x) for x in commands]
     return commands_list
+
+
+# TODO
+# CHARACTER COMPILER

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 class Command:
     pass
 
@@ -11,6 +12,7 @@ class RollDice(Command):
     dice_count: int
     dice_size: int
     modifier: int
+
 
 @dataclass
 class MetaCommand(Command):

@@ -1,6 +1,11 @@
 from enum import Enum
 
 
+class CompileValidationResults(Enum):
+    COMPILE_POSSIBLE = "compile_possible"
+    COMPILE_IMPOSSIBLE = "compile_impossible"
+
+
 class MetaCommands(Enum):
     EXIT = ".exit"
     HELP = ".help"
@@ -27,6 +32,9 @@ class MetaCommandOutputs(Enum):
         """
     PREFIX = """
         can be both upper and lowercase
+        get = get an existing character
+        upsert = create a new character or update a character
+        del = delete a character
         adv = advantage
         dadv = disadvantage
         dropmax = drops max from a number of rolls
@@ -40,6 +48,9 @@ class MetaCommandOutputs(Enum):
 
 
 class Commands(Enum):
+    GET = "get"
+    UPSERT = "upsert"
+    DELETE = "del"
     ADVANTAGE = "adv"
     DISADVANTAGE = "dadv"
     DROPMIN = "dropmin"
@@ -50,6 +61,7 @@ class Commands(Enum):
     MAX = "max"
     MIN = "min"
 
+
 class AverageRolls(Enum):
     HUNDREAD = 50.5
     TWENTY = 10.5
@@ -57,6 +69,7 @@ class AverageRolls(Enum):
     EIGHT = 4.5
     SIX = 3.5
     FOUR = 2.5
+
 
 class DiceRegexes(Enum):
     MULTIPLIER = "\d+x"
