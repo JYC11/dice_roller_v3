@@ -36,6 +36,8 @@ def extract_prefix(raw_user_input: str) -> dict:
         prefix = Commands.MIN.value
     elif raw_user_input.startswith(Commands.THRESH.value):
         prefix = Commands.THRESH.value
+    elif raw_user_input.startswith(Commands.REROLL_ONES.value):
+        prefix = Commands.REROLL_ONES.value
     return prefix
 
 

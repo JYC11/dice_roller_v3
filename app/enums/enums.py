@@ -61,6 +61,7 @@ class Commands(Enum):
     MAX = "max"
     MIN = "min"
     THRESH = "thresh"
+    REROLL_ONES = "reroll_ones"
 
 
 class AverageRolls(Enum):
@@ -76,3 +77,111 @@ class DiceRegexes(Enum):
     MULTIPLIER = r"\d+x"
     DICE = r"\d+d\d+"
     MODIFIER = r"[\+\-]\d+"
+
+
+class DndAbilities(Enum):
+    STRENGTH = "strength"
+    DEXTERITY = "dexterity"
+    CONSTITUTION = "constitution"
+    INTELLIGENCE = "intelligence"
+    WISDOM = "wisdom"
+    CHARISMA = "charisma"
+
+
+class DndSkills(Enum):
+    ACROBATICS = "acrobatics"  # dex
+    ANIMAL_HANDLING = "animal_handling"  # wis
+    ARCANA = "arcana"  # int
+    ATHLETICS = "athletics"  # str
+    DECEPTION = "deception"  # cha
+    HISTORY = "history"  # int
+    INSIGHT = "insight"  # wis
+    INTIMIDATION = "intimidation"  # cha
+    INVESTIGATION = "investigation"  # int
+    MEDICINE = "medicine"  # wis
+    NATURE = "nature"  # wis
+    PERCEPTION = "perception"  # wis
+    PERFORMANCE = "performance"  # cha
+    PERSUASION = "persuasion"  # cha
+    RELIGION = "religion"  # int
+    SLEIGHT_OF_HAND = "sleight_of_hand"  # dex
+    STEALTH = "stealth"  # dex
+    SURVIVAL = "survival"  # wis
+
+
+class DndSkillGroupings(Enum):
+    STRENGTH = [DndSkills.ATHLETICS.value]
+    DEXTERITY = [
+        DndSkills.ACROBATICS.value,
+        DndSkills.STEALTH.value,
+        DndSkills.SLEIGHT_OF_HAND.value,
+    ]
+    CONSTITUTION = []
+    INTELLIGENCE = [
+        DndSkills.ARCANA.value,
+        DndSkills.HISTORY.value,
+        DndSkills.INVESTIGATION.value,
+        DndSkills.RELIGION.value,
+    ]
+    WISDOM = [
+        DndSkills.ANIMAL_HANDLING.value,
+        DndSkills.INSIGHT.value,
+        DndSkills.MEDICINE.value,
+        DndSkills.NATURE.value,
+        DndSkills.PERCEPTION.value,
+        DndSkills.SURVIVAL.value,
+    ]
+    CHARISMA = [
+        DndSkills.PERSUASION.value,
+        DndSkills.DECEPTION.value,
+        DndSkills.INTIMIDATION.value,
+        DndSkills.PERFORMANCE.value,
+    ]
+
+
+class DndWeapons(Enum):
+    SIMPLE = "simple"
+    MARTIAL = "martial"
+    OTHER = "other"
+
+
+class DndTools(Enum):
+    ALCHEMIST = "alchemist"
+    BREWER = "brewer"
+    CALLIGRAPHER = "calligrapher"
+    CARPENTER = "carpenter"
+    CARTOGRAPHER = "cartographer"
+    COBBLER = "cobbler"
+    COOK = "cook"
+    GLASSBLOWER = "glassblower"
+    JEWELER = "jeweler"
+    LEATHER = "leatherworker"
+    MASON = "mason"
+    PAINTER = "painter"
+    POTTER = "potter"
+    SMITH = "smith"
+    TINKER = "tinker"
+    WEAVER = "weaver"
+    WOODCARVER = "woodcarver"
+    DISGUISE = "disguise"
+    FORGERY = "forgery"
+    DICE = "dice"
+    DRAGONCHESS = "dragonchess"
+    PLAYING_CARD = "playing_cards"
+    THREE_DRAGON = "three-dragon_ante"
+    HERBALISM = "herbalism"
+    BAGPIPE = "bagpipes"
+    DRUM = "drum"
+    DULCIMER = "dulcimer"
+    FLUTE = "flute"
+    LUTE = "lute"
+    LYRE = "lyre"
+    HORN = "horn"
+    PAN_FLUTE = "pan_flute"
+    SHAWM = "shawm"
+    VIOL = "viol"
+    NAVIGATOR = "navigator"
+    POISONER = "poisoner"
+    THIEF = "thief"
+    LAND = "land_vehicles"
+    WATER = "water_vehicles"
