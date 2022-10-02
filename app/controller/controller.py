@@ -1,6 +1,6 @@
 import sys
-from enums.enums import Commands, CompileValidationResults
-from compiler import compiler
+from app.enums.enums import Commands, CompileValidationResults
+from app.compiler import compiler
 
 
 def repl():

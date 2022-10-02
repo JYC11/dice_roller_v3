@@ -1,6 +1,6 @@
 import sys
 
-from enums.enums import MetaCommands, MetaCommandOutputs
+from app.enums.enums import MetaCommands, MetaCommandOutputs
 
 
 def do_meta_command_output(command: str) -> str:

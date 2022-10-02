@@ -60,6 +60,7 @@ class Commands(Enum):
     AVERAGE = "avg"
     MAX = "max"
     MIN = "min"
+    THRESH = "thresh"
 
 
 class AverageRolls(Enum):
@@ -72,6 +73,6 @@ class AverageRolls(Enum):
 
 
 class DiceRegexes(Enum):
-    MULTIPLIER = "\d+x"
-    DICE = "\d+d\d+"
-    MODIFIER = "[\+\-]\d+"
+    MULTIPLIER = r"\d+x"
+    DICE = r"\d+d\d+"
+    MODIFIER = r"[\+\-]\d+"

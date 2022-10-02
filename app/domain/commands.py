@@ -6,7 +6,7 @@ class Command:
 
 
 @dataclass
-class RollDice(Command):
+class RollDiceCommand(Command):
     prefix: str
     multiplier: int
     dice_count: int
