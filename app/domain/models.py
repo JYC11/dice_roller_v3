@@ -2,16 +2,19 @@ from .base import Base
 from enums import enums
 
 
+from app.service.handler import dice_roll_handler
+
+
 class DndCharcter(Base):
     name: str
     class_name: str
     subclass_name: str
-    strength: int
-    dexterity: int
-    consitution: int
-    intelligence: int
-    wisdom: int
-    charisma: int
+    strength_mod: int
+    dexterity_mod: int
+    consitution_mod: int
+    intelligence_mod: int
+    wisdom_mod: int
+    charisma_mod: int
     hit_dice: int
     hit_dice_count: int
     proficiency: int
@@ -23,6 +26,30 @@ class DndCharcter(Base):
     tool_proficiencies: list[enums.DndTools]
     tool_expertises: list[enums.DndTools]
     attacks: list["DndAttacks"]
+
+    def _construct_attack_roll(self):
+        return
+
+    def _construct_damage_roll(self):
+        return
+
+    def _construct_skill_check_roll(self):
+        return
+
+    def _construct_saving_throw_roll(self):
+        return
+
+    def make_attack_roll(self):
+        return
+
+    def make_damage_roll(self):
+        return
+
+    def make_skill_check(self):
+        return
+
+    def make_saving_throw(self):
+        return
 
 
 class DndAttacks(Base):  # look into things that give advantage

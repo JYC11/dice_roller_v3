@@ -1,7 +1,7 @@
 import re
 from typing import Any
 
-from app.domain.commands import RollDiceCommand
+from app.domain.commands import RollDice
 from app.enums.enums import Commands, DiceRegexes, CompileValidationResults
 
 
@@ -24,10 +24,6 @@ def extract_prefix(raw_user_input: str) -> dict:
         prefix = Commands.DROPMAX.value
     elif raw_user_input.startswith(Commands.DROPMIN.value):
         prefix = Commands.DROPMIN.value
-    elif raw_user_input.startswith(Commands.GETMAX.value):
-        prefix = Commands.GETMAX.value
-    elif raw_user_input.startswith(Commands.GETMIN.value):
-        prefix = Commands.GETMIN.value
     elif raw_user_input.startswith(Commands.AVERAGE.value):
         prefix = Commands.AVERAGE.value
     elif raw_user_input.startswith(Commands.MAX.value):
@@ -67,12 +63,12 @@ def get_modifier(raw_user_input: str) -> int:
     return modifier
 
 
-def create_roll_dice_command(raw_user_input: str) -> RollDiceCommand:
+def create_roll_dice_command(raw_user_input: str) -> RollDice:
     prefix = extract_prefix(raw_user_input)
     multiplier = get_multiplier(raw_user_input)
     dice_count, dice_size = get_dice(raw_user_input)
     modifier = get_modifier(raw_user_input)
-    return RollDiceCommand(
+    return RollDice(
         prefix=prefix,
         multiplier=multiplier,
         dice_count=dice_count,
@@ -81,11 +77,9 @@ def create_roll_dice_command(raw_user_input: str) -> RollDiceCommand:
     )
 
 
-def compile_raw_user_input(raw_user_input: str) -> list[RollDiceCommand]:
+def compile_raw_user_input(raw_user_input: str) -> list[RollDice]:
     commands: list[str] = raw_user_input.split(",")
-    commands_list: list[RollDiceCommand] = [
-        create_roll_dice_command(x) for x in commands
-    ]
+    commands_list: list[RollDice] = [create_roll_dice_command(x) for x in commands]
     return commands_list
 
 

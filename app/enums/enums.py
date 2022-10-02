@@ -39,8 +39,6 @@ class MetaCommandOutputs(Enum):
         dadv = disadvantage
         dropmax = drops max from a number of rolls
         dropmin = drops min from a number of rolls
-        getmax = gets maximum possible value
-        getmin = gets minimum possible value
         average = rolls using average values
         max = gets maximum of the rolls
         min = get minimum of the rolls
@@ -55,22 +53,11 @@ class Commands(Enum):
     DISADVANTAGE = "dadv"
     DROPMIN = "dropmin"
     DROPMAX = "dropmax"
-    GETMIN = "getmin"
-    GETMAX = "getmax"
     AVERAGE = "avg"
     MAX = "max"
     MIN = "min"
     THRESH = "thresh"
     REROLL_ONES = "reroll_ones"
-
-
-class AverageRolls(Enum):
-    HUNDREAD = 50.5
-    TWENTY = 10.5
-    TWELVE = 6.5
-    EIGHT = 4.5
-    SIX = 3.5
-    FOUR = 2.5
 
 
 class DiceRegexes(Enum):
@@ -86,6 +73,12 @@ class DndAbilities(Enum):
     INTELLIGENCE = "intelligence"
     WISDOM = "wisdom"
     CHARISMA = "charisma"
+
+
+class DndRollTypes(Enum):
+    ATTACK = "attack"
+    DAMAGE = "damage"
+    CHECK = "check"
 
 
 class DndSkills(Enum):
