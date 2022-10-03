@@ -3,64 +3,87 @@ import random
 
 
 from app.domain import commands, events
+from app.service import exceptions
 from app.enums import enums
-from app.enums.enums import MetaCommands, MetaCommandOutputs, Commands
 
 
 def do_meta_command_output(command: str) -> str:
     command = command.lower()
-    if command == MetaCommands.EXIT.value:
-        print(MetaCommandOutputs.EXIT.value)
+    if command == enums.MetaCommands.EXIT.value:
+        print(enums.MetaCommandOutputs.EXIT.value)
         sys.exit(0)
-    elif command == MetaCommands.HELP.value:
-        print(MetaCommandOutputs.HELP.value)
-        return MetaCommandOutputs.HELP.value
-    elif command == MetaCommands.DICE.value:
-        print(MetaCommandOutputs.DICE.value)
-        return MetaCommandOutputs.DICE.value
-    elif command == MetaCommands.PREFIX.value:
-        print(MetaCommandOutputs.PREFIX.value)
-        return MetaCommandOutputs.PREFIX.value
+    elif command == enums.MetaCommands.HELP.value:
+        print(enums.MetaCommandOutputs.HELP.value)
+        return enums.MetaCommandOutputs.HELP.value
+    elif command == enums.MetaCommands.DICE.value:
+        print(enums.MetaCommandOutputs.DICE.value)
+        return enums.MetaCommandOutputs.DICE.value
+    elif command == enums.MetaCommands.PREFIX.value:
+        print(enums.MetaCommandOutputs.PREFIX.value)
+        return enums.MetaCommandOutputs.PREFIX.value
 
 
-def dice_roll_handler(dice_roll: commands.RollDice):
+def dice_roll_handler(dice_roll: commands.RollDice) -> list[events.DiceRolled]:
     prefix = dice_roll.prefix
     multiplier = dice_roll.multiplier
     dice_count = dice_roll.dice_count
     dice_size = dice_roll.dice_size
     modifier = dice_roll.modifier
     dice_range = [n for n in range(1, dice_size + 1)]
-    all_dice_rolls = []
+    all_dice_rolls: list[events.DiceRolled] = []
     for i in range(multiplier):
+        dropped_roll = []
         match prefix:
             case "std":
                 rolls = [random.choice(dice_range) for _ in range(dice_count)]
-            case Commands.ADVANTAGE.value | Commands.DISADVANTAGE.value:
+            case enums.Commands.ADVANTAGE.value | enums.Commands.DISADVANTAGE.value:
+                if dice_count > 1:
+                    raise exceptions.IncorrectDiceCount
                 _rolls = [random.choice(dice_range) for _ in range(dice_count + 1)]
-                if prefix == Commands.ADVANTAGE.value:
+                if prefix == enums.Commands.ADVANTAGE.value:
                     rolls = [max(_rolls)]
-                elif prefix == Commands.DISADVANTAGE.value:
+                    dropped_roll.append(min(_rolls))
+                elif prefix == enums.Commands.DISADVANTAGE.value:
                     rolls = [min(_rolls)]
-            case Commands.DROPMAX.value | Commands.DROPMIN.value:
+                    dropped_roll.append(max(_rolls))
+            case enums.Commands.DROPMAX.value | enums.Commands.DROPMIN.value:
                 _rolls = [random.choice(dice_range) for _ in range(dice_count)]
-                if prefix == Commands.DROPMAX.value:
+                if prefix == enums.Commands.DROPMAX.value:
                     _rolls.sort(reverse=True)
-                elif prefix == Commands.DROPMIN.value:
+                elif prefix == enums.Commands.DROPMIN.value:
                     _rolls.sort()
                 rolls = _rolls[1:]
-            case Commands.AVERAGE.value:
+                dropped_roll.append(_rolls[0])
+            case enums.Commands.AVERAGE.value:
                 average = float(sum(dice_range)) / float(dice_size)
                 rolls = [average for _ in range(dice_count)]
-            case Commands.MAX.value:
+            case enums.Commands.MAX.value:
                 rolls = [dice_size for _ in range(dice_count)]
-            case Commands.MIN.value:
+            case enums.Commands.MIN.value:
                 rolls = [1 for _ in range(dice_count)]
+            case enums.Commands.REROLL_ONES.value:
+                _rolls = [random.choice(dice_range) for _ in range(dice_count)]
+                _rolls.sort()
+                if _rolls[0] == 1:
+                    rolls = _rolls[1:]
+                    rolls.append(random.choice(dice_range))
+                else:
+                    rolls = _rolls
+            case enums.Commands.THRESH.value:
+                threshold = dice_roll.threshold
+                if not threshold:
+                    raise exceptions.ThresholdNotProvided
+                _rolls = [random.choice(dice_range) for _ in range(dice_count)]
+                rolls = [x for x in _rolls if x >= dice_roll.threshold]
+                lower_rolls = [x for x in _rolls if x < dice_roll.threshold]
+                dropped_roll.extend(lower_rolls)
         result = events.DiceRolled(
             roll_number=i + 1,
             dice_result=sum(rolls),
             dice_results=rolls,
             modifier=modifier,
             total=sum(rolls) + modifier,
+            dropped_roll=dropped_roll,
         )
         all_dice_rolls.append(result)
     return all_dice_rolls

@@ -10,6 +10,7 @@ def test_create_roll_dice_command(test_individual_raw_user_input_data: list[dict
             dice_count=test_data["expected_dice_count"],
             dice_size=test_data["expected_dice_size"],
             modifier=test_data["expected_modifier"],
+            threshold=test_data["expected_threshold"],
         )
         actual = compiler.create_roll_dice_command(test_data["dice_roll"])
         assert type(actual) == RollDice
@@ -25,6 +26,7 @@ def test_compile_raw_user_input(test_multiple_raw_user_input_data: list[tuple]):
             dice_count=data1["expected_dice_count"],
             dice_size=data1["expected_dice_size"],
             modifier=data1["expected_modifier"],
+            threshold=data1["expected_threshold"],
         )
         command2 = RollDice(
             prefix=data2["expected_prefix"],
@@ -32,6 +34,7 @@ def test_compile_raw_user_input(test_multiple_raw_user_input_data: list[tuple]):
             dice_count=data2["expected_dice_count"],
             dice_size=data2["expected_dice_size"],
             modifier=data2["expected_modifier"],
+            threshold=data2["expected_threshold"],
         )
         expected = [command1, command2]
 

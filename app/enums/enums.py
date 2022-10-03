@@ -64,6 +64,7 @@ class DiceRegexes(Enum):
     MULTIPLIER = r"\d+x"
     DICE = r"\d+d\d+"
     MODIFIER = r"[\+\-]\d+"
+    THRESHOLD = r"t\d+"
 
 
 class DndAbilities(Enum):

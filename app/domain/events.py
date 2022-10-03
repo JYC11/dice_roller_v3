@@ -1,3 +1,5 @@
+from typing import Optional
+
 from dataclasses import dataclass
 
 
@@ -12,3 +14,4 @@ class DiceRolled(Event):
     dice_results: list[int]
     modifier: int
     total: int
+    dropped_roll: Optional[int]

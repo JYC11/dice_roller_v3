@@ -31,3 +31,11 @@ def test_get_modifier(test_individual_raw_user_input_data: list[dict]):
             compiler.get_modifier(test_data["dice_roll"])
             == test_data["expected_modifier"]
         )
+
+
+def test_get_threshold(test_individual_raw_user_input_data: list[dict]):
+    for test_data in test_individual_raw_user_input_data:
+        assert (
+            compiler.get_threshold(test_data["dice_roll"])
+            == test_data["expected_threshold"]
+        )

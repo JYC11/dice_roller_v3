@@ -16,6 +16,7 @@ def user_input_factory() -> dict:
     dice_count = randint(1, 100)
     dice_size = randint(2, 100)
     modifier = randint(-100, 100)
+    threshold = randint(0, 100)
     dice_roll = f"{prefix} {multiplier}x{dice_count}d{dice_size}"
     if modifier > 0:
         dice_roll += f"+{modifier}"
@@ -23,6 +24,7 @@ def user_input_factory() -> dict:
         dice_roll += f"-{abs(modifier)}"
     elif modifier == 0:
         dice_roll += ""
+    dice_roll += f"t{threshold}"
 
     output = {
         "dice_roll": dice_roll,
@@ -31,6 +33,7 @@ def user_input_factory() -> dict:
         "expected_dice_count": dice_count,
         "expected_dice_size": dice_size,
         "expected_modifier": modifier,
+        "expected_threshold": threshold,
     }
     return output
 
@@ -41,6 +44,7 @@ def roll_dice_command_factory(
     dice_count: int | None = None,
     dice_size: int | None = None,
     modifier: int | None = None,
+    threshold: int | None = None,
 ):
     if not prefix:
         _prefix = choice(dice_roll_prefixes)
@@ -53,11 +57,14 @@ def roll_dice_command_factory(
         dice_size = randint(2, 100)
     if not modifier:
         modifier = randint(-100, 100)
+    if not threshold:
+        threshold = randint(0, 100)
     cmd = commands.RollDice(
         prefix=prefix,
         multiplier=multiplier,
         dice_count=dice_count,
         dice_size=dice_size,
         modifier=modifier,
+        threshold=threshold,
     )
     return cmd

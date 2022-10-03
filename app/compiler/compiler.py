@@ -1,5 +1,5 @@
 import re
-from typing import Any
+from typing import Optional
 
 from app.domain.commands import RollDice
 from app.enums.enums import Commands, DiceRegexes, CompileValidationResults
@@ -63,17 +63,27 @@ def get_modifier(raw_user_input: str) -> int:
     return modifier
 
 
+def get_threshold(raw_user_input: str) -> Optional[int]:
+    threshold: list[str] = re.findall(DiceRegexes.THRESHOLD.value, raw_user_input)
+    if threshold:
+        return int(threshold[0].replace("t", ""))
+    else:
+        return None
+
+
 def create_roll_dice_command(raw_user_input: str) -> RollDice:
     prefix = extract_prefix(raw_user_input)
     multiplier = get_multiplier(raw_user_input)
     dice_count, dice_size = get_dice(raw_user_input)
     modifier = get_modifier(raw_user_input)
+    threshold = get_threshold(raw_user_input)
     return RollDice(
         prefix=prefix,
         multiplier=multiplier,
         dice_count=dice_count,
         dice_size=dice_size,
         modifier=modifier,
+        threshold=threshold,
     )
 
 
