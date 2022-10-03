@@ -1,9 +1,12 @@
-from .base import Base
-from enums import enums
-
 from collections import deque
 from dataclasses import field
+from typing import Optional
 
+from .base import Base
+from app.enums import enums
+from app.domain import commands
+from app.utils.binary_search import binary_search
+from app.utils.data import constants
 from app.service.handler import dice_roll_handler
 
 
@@ -11,12 +14,12 @@ class DndCharcter(Base):
     name: str
     class_name: str
     subclass_name: str
-    strength_mod: int
-    dexterity_mod: int
-    consitution_mod: int
-    intelligence_mod: int
-    wisdom_mod: int
-    charisma_mod: int
+    strength: int
+    dexterity: int
+    consitution: int
+    intelligence: int
+    wisdom: int
+    charisma: int
     hit_dice: int
     hit_dice_count: int
     proficiency: int
@@ -30,32 +33,72 @@ class DndCharcter(Base):
     attacks: list["DndAttacks"]
     events: deque = field(default_factory=deque)
 
-    def _construct_attack_roll(self):
+    def make_attack_roll(
+        self,
+        attack_name: Optional[str] = None,
+        attack_id: Optional[int] = None,
+    ):
         return
 
-    def _construct_damage_roll(self):
+    def make_damage_roll(
+        self,
+        attack_name: Optional[str] = None,
+        attack_id: Optional[int] = None,
+    ):
         return
 
-    def _construct_skill_check_roll(self):
-        return
+    def make_skill_check_roll(
+        self, skill: enums.DndSkills, extra: int = 0, prefix: Optional[str] = None
+    ):
+        modifier = 0
+        modifier += extra
+        ability_name = constants.skills_and_abilities.get(skill)
+        ability_score = getattr(self, ability_name)
+        ability_mod = constants.ability_scores_and_modifiers.get(ability_score)
+        modifier += ability_mod
 
-    def _construct_saving_throw_roll(self):
-        return
+        if binary_search(self.skill_proficiencies, skill):
+            modifier += self.proficiency
+        if binary_search(self.skill_expertises, skill):
+            modifier += self.proficiency
+        if not prefix:
+            prefix = "std"
+        cmd = commands.RollDice(
+            prefix=prefix,
+            multiplier=1,
+            dice_count=1,
+            dice_size=20,
+            modifier=modifier,
+        )
+        result = dice_roll_handler(cmd)
+        return result
 
-    def make_attack_roll(self):
-        return
+    def make_saving_throw_roll(
+        self, ability: str, extra: int = 0, prefix: Optional[str] = None
+    ):
+        modifier = 0
+        modifier += extra
+        ability_score = getattr(self, ability)
+        ability_mod = constants.ability_scores_and_modifiers.get(ability_score)
+        modifier += ability_mod
 
-    def make_damage_roll(self):
-        return
-
-    def make_skill_check(self):
-        return
-
-    def make_saving_throw(self):
-        return
+        if binary_search(self.saving_throw_proficiencies, ability):
+            modifier += self.proficiency
+        if not prefix:
+            prefix = "std"
+        cmd = commands.RollDice(
+            prefix=prefix,
+            multiplier=1,
+            dice_count=1,
+            dice_size=20,
+            modifier=modifier,
+        )
+        result = dice_roll_handler(cmd)
+        return result
 
 
 class DndAttacks(Base):  # look into things that give advantage
+    character_id: int  # fk
     name: str
     weapon_type: enums.DndWeapons
     item_bonus: int
@@ -64,10 +107,11 @@ class DndAttacks(Base):  # look into things that give advantage
     subclass_bonus: int
     feature_bonus: int
     crit_range: int = 20
-    damage: "DndDamage"
+    damage: list["DndDamage"]
 
 
 class DndDamage(Base):
+    attack_id: int  # fk
     name: str
     dice_count: int
     dice_size: int

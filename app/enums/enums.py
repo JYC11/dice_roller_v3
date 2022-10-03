@@ -103,36 +103,6 @@ class DndSkills(Enum):
     SURVIVAL = "survival"  # wis
 
 
-class DndSkillGroupings(Enum):
-    STRENGTH = [DndSkills.ATHLETICS.value]
-    DEXTERITY = [
-        DndSkills.ACROBATICS.value,
-        DndSkills.STEALTH.value,
-        DndSkills.SLEIGHT_OF_HAND.value,
-    ]
-    CONSTITUTION = []
-    INTELLIGENCE = [
-        DndSkills.ARCANA.value,
-        DndSkills.HISTORY.value,
-        DndSkills.INVESTIGATION.value,
-        DndSkills.RELIGION.value,
-    ]
-    WISDOM = [
-        DndSkills.ANIMAL_HANDLING.value,
-        DndSkills.INSIGHT.value,
-        DndSkills.MEDICINE.value,
-        DndSkills.NATURE.value,
-        DndSkills.PERCEPTION.value,
-        DndSkills.SURVIVAL.value,
-    ]
-    CHARISMA = [
-        DndSkills.PERSUASION.value,
-        DndSkills.DECEPTION.value,
-        DndSkills.INTIMIDATION.value,
-        DndSkills.PERFORMANCE.value,
-    ]
-
-
 class DndWeapons(Enum):
     SIMPLE = "simple"
     MARTIAL = "martial"
