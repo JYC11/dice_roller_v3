@@ -1,6 +1,8 @@
 from .base import Base
 from enums import enums
 
+from collections import deque
+from dataclasses import field
 
 from app.service.handler import dice_roll_handler
 
@@ -26,6 +28,7 @@ class DndCharcter(Base):
     tool_proficiencies: list[enums.DndTools]
     tool_expertises: list[enums.DndTools]
     attacks: list["DndAttacks"]
+    events: deque = field(default_factory=deque)
 
     def _construct_attack_roll(self):
         return
