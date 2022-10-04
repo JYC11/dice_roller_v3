@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+tenacity = "*"
 sqlalchemy = "*"
 
 [dev-packages]
@@ -12,6 +13,3 @@ black = "*"
 
 [requires]
 python_version = "3.10"
-
-[pipenv]
-allow_prereleases = true

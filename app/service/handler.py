@@ -23,7 +23,7 @@ def do_meta_command_output(command: str) -> str:
         return enums.MetaCommandOutputs.PREFIX.value
 
 
-def dice_roll_handler(dice_roll: commands.RollDice) -> list[events.DiceRolled]:
+def roll_dice(dice_roll: commands.RollDice) -> list[events.DiceRolled]:
     prefix = dice_roll.prefix
     multiplier = dice_roll.multiplier
     dice_count = dice_roll.dice_count
@@ -87,3 +87,8 @@ def dice_roll_handler(dice_roll: commands.RollDice) -> list[events.DiceRolled]:
         )
         all_dice_rolls.append(result)
     return all_dice_rolls
+
+
+COMMAND_HANDLERS = {
+    commands.RollDice: roll_dice,
+}

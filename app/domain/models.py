@@ -7,7 +7,6 @@ from app.enums import enums
 from app.domain import commands
 from app.utils.binary_search import binary_search
 from app.utils.data import constants
-from app.service.handler import dice_roll_handler
 
 
 class DndCharcter(Base):
@@ -33,23 +32,23 @@ class DndCharcter(Base):
     attacks: list["DndAttacks"]
     events: deque = field(default_factory=deque)
 
-    def make_attack_roll(
+    def construct_attack_roll(
         self,
         attack_name: Optional[str] = None,
         attack_id: Optional[int] = None,
     ):
         return
 
-    def make_damage_roll(
+    def construct_damage_roll(
         self,
         attack_name: Optional[str] = None,
         attack_id: Optional[int] = None,
     ):
         return
 
-    def make_skill_check_roll(
+    def construct_skill_check_roll(
         self, skill: enums.DndSkills, extra: int = 0, prefix: Optional[str] = None
-    ):
+    ) -> commands.RollDice:
         modifier = 0
         modifier += extra
         ability_name = constants.skills_and_abilities.get(skill)
@@ -70,12 +69,11 @@ class DndCharcter(Base):
             dice_size=20,
             modifier=modifier,
         )
-        result = dice_roll_handler(cmd)
-        return result
+        return cmd
 
-    def make_saving_throw_roll(
+    def construct_saving_throw_roll(
         self, ability: str, extra: int = 0, prefix: Optional[str] = None
-    ):
+    ) -> commands.RollDice:
         modifier = 0
         modifier += extra
         ability_score = getattr(self, ability)
@@ -93,8 +91,7 @@ class DndCharcter(Base):
             dice_size=20,
             modifier=modifier,
         )
-        result = dice_roll_handler(cmd)
-        return result
+        return cmd
 
 
 class DndAttacks(Base):  # look into things that give advantage
