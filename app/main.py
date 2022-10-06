@@ -18,6 +18,6 @@
 # print rolls
 
 
-from controller.controller import repl
+from entrypoint.repl import repl
 
 repl()
