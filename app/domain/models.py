@@ -31,6 +31,9 @@ class DndCharcter(Base):
     tool_proficiencies: list[enums.DndTools]
     tool_expertises: list[enums.DndTools]
     attacks: list["DndAttacks"]
+    class_related_damage_dice: list[dict]  # eg ranger {"favoured_foe": "1d4"}
+    subclass_related_damage_dice: list[dict]  # eg battlemaster {"trip_attack" : "1d8"}
+    race_related_damage_dice: list[dict]  # eg bugbear {"surprise": "2d6"}
     character_events: deque = field(default_factory=deque)
 
     @property
@@ -45,8 +48,8 @@ class DndCharcter(Base):
         use_dual_wielding: bool = False,
         attack_name: str = None,
         prefix: enums.Commands | str = "std",
-        additional_dice_count: int = 0,
-        additional_dice_size: int = 0,
+        other_bonuses: int = 0,
+        misc_extra_damage_dice: str | None = None,
     ) -> commands.RollDice:
         attack: Optional[DndAttacks] = self._attack_dict.get(attack_name)
         if not attack:
@@ -81,6 +84,7 @@ class DndCharcter(Base):
             + damage.subclass_bonus
             + damage.feature_bonus
             + damage.item_bonus
+            + other_bonuses
         )
 
         cmd = commands.RollDice(
@@ -92,12 +96,14 @@ class DndCharcter(Base):
             modifier=modifier,
             crit_threshold=attack.crit_threshold,
         )
+        # TODO: add other additional damage dice
         return cmd
 
     def construct_attack_roll(
         self,
         attack_name: str = None,
         prefix: enums.Commands | str = "std",
+        other_bonuses: int = 0,
     ) -> commands.RollDice:
         attack: Optional[DndAttacks] = self._attack_dict.get(attack_name)
         if not attack:
@@ -123,6 +129,7 @@ class DndCharcter(Base):
             + attack.feature_bonus
             + attack.class_bonus
             + attack.subclass_bonus
+            + other_bonuses
         )
         cmd = commands.RollDice(
             game_type=enums.GameType.DND.value,
