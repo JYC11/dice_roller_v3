@@ -18,19 +18,19 @@ def test_roll_dice():
         )
         results = roll_dice(cmd)
         for result in results:
-            assert len(result.dropped_roll) == 1
+            assert len(result.dropped_rolls) == 1
 
     for _ in range(10):
         cmd = roll_dice_command_factory(prefix=enums.Commands.DROPMAX.value)
         results = roll_dice(cmd)
         for result in results:
-            assert len(result.dropped_roll) == 1
+            assert len(result.dropped_rolls) == 1
 
     for _ in range(10):
         cmd = roll_dice_command_factory(prefix=enums.Commands.DROPMIN.value)
         results = roll_dice(cmd)
         for result in results:
-            assert len(result.dropped_roll) == 1
+            assert len(result.dropped_rolls) == 1
 
     for _ in range(10):
         cmd = roll_dice_command_factory(
@@ -38,4 +38,4 @@ def test_roll_dice():
         )
         results = roll_dice(cmd)
         for result in results:
-            assert len(result.dropped_roll) >= 0
+            assert len(result.lower_rolls) >= 0

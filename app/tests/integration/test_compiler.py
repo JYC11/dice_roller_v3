@@ -5,6 +5,7 @@ from app.domain.commands import RollDice
 def test_create_roll_dice_command(test_individual_raw_user_input_data: list[dict]):
     for test_data in test_individual_raw_user_input_data:
         expected = RollDice(
+            game_type="dnd",
             prefix=test_data["expected_prefix"],
             multiplier=test_data["expected_multiplier"],
             dice_count=test_data["expected_dice_count"],
@@ -21,6 +22,7 @@ def test_compile_raw_user_input(test_multiple_raw_user_input_data: list[tuple]):
     for test_data in test_multiple_raw_user_input_data:
         data1, data2 = test_data
         command1 = RollDice(
+            game_type="dnd",
             prefix=data1["expected_prefix"],
             multiplier=data1["expected_multiplier"],
             dice_count=data1["expected_dice_count"],
@@ -29,6 +31,7 @@ def test_compile_raw_user_input(test_multiple_raw_user_input_data: list[tuple]):
             threshold=data1["expected_threshold"],
         )
         command2 = RollDice(
+            game_type="dnd",
             prefix=data2["expected_prefix"],
             multiplier=data2["expected_multiplier"],
             dice_count=data2["expected_dice_count"],

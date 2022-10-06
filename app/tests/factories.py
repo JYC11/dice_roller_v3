@@ -39,6 +39,7 @@ def user_input_factory() -> dict:
 
 
 def roll_dice_command_factory(
+    game_type: enums.GameType | None = None,
     prefix: enums.Commands | None = None,
     multiplier: int | None = None,
     dice_count: int | None = None,
@@ -46,6 +47,8 @@ def roll_dice_command_factory(
     modifier: int | None = None,
     threshold: int | None = None,
 ):
+    if not game_type:
+        game_type = enums.GameType.DND.value
     if not prefix:
         _prefix = choice(dice_roll_prefixes)
         prefix = "std" if _prefix == "" else _prefix
@@ -60,6 +63,7 @@ def roll_dice_command_factory(
     if not threshold:
         threshold = randint(0, 100)
     cmd = commands.RollDice(
+        game_type=game_type,
         prefix=prefix,
         multiplier=multiplier,
         dice_count=dice_count,

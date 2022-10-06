@@ -1,6 +1,10 @@
 from enum import Enum
 
 
+class GameType(Enum):
+    DND = "dnd"
+
+
 class CompileValidationResults(Enum):
     COMPILE_POSSIBLE = "compile_possible"
     COMPILE_IMPOSSIBLE = "compile_impossible"
@@ -107,6 +111,12 @@ class DndWeapons(Enum):
     SIMPLE = "simple"
     MARTIAL = "martial"
     OTHER = "other"
+
+
+class DndWeaponWeight(Enum):
+    HEAVY = "heavy"
+    MEDIUM = "medium"
+    LIGHT = "light"
 
 
 class DndTools(Enum):

@@ -24,6 +24,7 @@ def do_meta_command_output(command: str) -> str:
 
 
 def roll_dice(dice_roll: commands.RollDice) -> list[events.DiceRolled]:
+    game_type = dice_roll.game_type
     prefix = dice_roll.prefix
     multiplier = dice_roll.multiplier
     dice_count = dice_roll.dice_count
@@ -32,7 +33,8 @@ def roll_dice(dice_roll: commands.RollDice) -> list[events.DiceRolled]:
     dice_range = [n for n in range(1, dice_size + 1)]
     all_dice_rolls: list[events.DiceRolled] = []
     for i in range(multiplier):
-        dropped_roll = []
+        dropped_rolls = []
+        lower_rolls = []
         match prefix:
             case "std":
                 rolls = [random.choice(dice_range) for _ in range(dice_count)]
@@ -42,10 +44,10 @@ def roll_dice(dice_roll: commands.RollDice) -> list[events.DiceRolled]:
                 _rolls = [random.choice(dice_range) for _ in range(dice_count + 1)]
                 if prefix == enums.Commands.ADVANTAGE.value:
                     rolls = [max(_rolls)]
-                    dropped_roll.append(min(_rolls))
+                    dropped_rolls.append(min(_rolls))
                 elif prefix == enums.Commands.DISADVANTAGE.value:
                     rolls = [min(_rolls)]
-                    dropped_roll.append(max(_rolls))
+                    dropped_rolls.append(max(_rolls))
             case enums.Commands.DROPMAX.value | enums.Commands.DROPMIN.value:
                 _rolls = [random.choice(dice_range) for _ in range(dice_count)]
                 if prefix == enums.Commands.DROPMAX.value:
@@ -53,7 +55,7 @@ def roll_dice(dice_roll: commands.RollDice) -> list[events.DiceRolled]:
                 elif prefix == enums.Commands.DROPMIN.value:
                     _rolls.sort()
                 rolls = _rolls[1:]
-                dropped_roll.append(_rolls[0])
+                dropped_rolls.append(_rolls[0])
             case enums.Commands.AVERAGE.value:
                 average = float(sum(dice_range)) / float(dice_size)
                 rolls = [average for _ in range(dice_count)]
@@ -75,16 +77,24 @@ def roll_dice(dice_roll: commands.RollDice) -> list[events.DiceRolled]:
                     raise exceptions.ThresholdNotProvided
                 _rolls = [random.choice(dice_range) for _ in range(dice_count)]
                 rolls = [x for x in _rolls if x >= dice_roll.threshold]
-                lower_rolls = [x for x in _rolls if x < dice_roll.threshold]
-                dropped_roll.extend(lower_rolls)
+                _lower_rolls = [x for x in _rolls if x < dice_roll.threshold]
+                lower_rolls.extend(_lower_rolls)
         result = events.DiceRolled(
+            game_type=game_type,
             roll_number=i + 1,
             dice_result=sum(rolls),
             dice_results=rolls,
             modifier=modifier,
             total=sum(rolls) + modifier,
-            dropped_roll=dropped_roll,
+            dropped_rolls=dropped_rolls,
+            lower_rolls=lower_rolls,
         )
+        if game_type == enums.GameType.DND.value:
+            if dice_size == 20:
+                if result.dice_result >= dice_roll.crit_threshold:
+                    result.critical = True
+            else:
+                result.critical = False
         all_dice_rolls.append(result)
     return all_dice_rolls
 
