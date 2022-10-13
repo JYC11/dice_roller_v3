@@ -42,7 +42,6 @@ def test_roll_dice():
 
 
 def test_create_dice_commands():
-
     chars = dnd_full_character_factory()
     character = chars[0]
     assert character
