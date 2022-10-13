@@ -1,5 +1,4 @@
 from collections import deque
-from dataclasses import field
 from typing import Optional
 
 from .base import Base
@@ -10,10 +9,9 @@ from app.utils.data import constants
 from app.domain import exceptions as domain_exc
 
 
-class DndCharcter(Base):
+class DndCharacter(Base):
     name: str
-    class_name: str
-    subclass_name: str
+    level: int
     strength: int
     dexterity: int
     consitution: int
@@ -21,7 +19,6 @@ class DndCharcter(Base):
     wisdom: int
     charisma: int
     hit_dice: int
-    hit_dice_count: int
     proficiency: int
     armour_class: int
     weapon_proficiencies: list[enums.DndWeapons]
@@ -30,14 +27,11 @@ class DndCharcter(Base):
     skill_expertises: list[enums.DndSkills]
     tool_proficiencies: list[enums.DndTools]
     tool_expertises: list[enums.DndTools]
-    attacks: list["DndAttacks"]
-    class_related_damage_dice: list[dict]  # eg ranger {"favoured_foe": "1d4"}
-    subclass_related_damage_dice: list[dict]  # eg battlemaster {"trip_attack" : "1d8"}
-    race_related_damage_dice: list[dict]  # eg bugbear {"surprise": "2d6"}
-    character_events: deque = field(default_factory=deque)
+    attacks: list["DndAttack"]
+    character_events: deque = deque()
 
     @property
-    def _attack_dict(self) -> dict[str, "DndAttacks"]:
+    def _attack_dict(self) -> dict[str, "DndAttack"]:
         res = {x.name: x for x in self.attacks}
         return res
 
@@ -49,9 +43,8 @@ class DndCharcter(Base):
         attack_name: str = None,
         prefix: enums.Commands | str = "std",
         other_bonuses: int = 0,
-        misc_extra_damage_dice: str | None = None,
     ) -> commands.RollDice:
-        attack: Optional[DndAttacks] = self._attack_dict.get(attack_name)
+        attack: Optional[DndAttack] = self._attack_dict.get(attack_name)
         if not attack:
             raise domain_exc.AttackNameNotFound(
                 f"attack with name {attack_name} not found"
@@ -105,7 +98,7 @@ class DndCharcter(Base):
         prefix: enums.Commands | str = "std",
         other_bonuses: int = 0,
     ) -> commands.RollDice:
-        attack: Optional[DndAttacks] = self._attack_dict.get(attack_name)
+        attack: Optional[DndAttack] = self._attack_dict.get(attack_name)
         if not attack:
             raise domain_exc.AttackNameNotFound(
                 f"attack with name {attack_name} not found"
@@ -200,7 +193,7 @@ class DndCharcter(Base):
         return cmd
 
 
-class DndAttacks(Base):  # look into things that give advantage
+class DndAttack(Base):  # look into things that give advantage
     character_id: int  # fk
     name: str
     weapon_type: enums.DndWeapons

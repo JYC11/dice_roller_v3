@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Sequence
+from typing import Sequence, Optional
 
 from sqlalchemy.orm.exc import DetachedInstanceError
 
@@ -7,8 +7,13 @@ from sqlalchemy.orm.exc import DetachedInstanceError
 class Base:
     id: int
     create_dt: datetime
-    update_dt: datetime
+    update_dt: Optional[datetime]
     __repr_attrs__: Sequence[str] = ["id"]
+
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
 
     def __name__(self):
         return super().__name__()

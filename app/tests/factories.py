@@ -1,7 +1,13 @@
-from random import randint, choice
+from datetime import datetime
+from random import randint, choice, sample
 
+from app.domain import models
 from app.domain import commands
 from app.enums import enums
+
+from faker import Faker
+
+fake = Faker()
 
 dice_roll_prefixes = [
     c.value for c in enums.Commands if c.value not in ["get", "upsert", "del"]
@@ -72,3 +78,85 @@ def roll_dice_command_factory(
         threshold=threshold,
     )
     return cmd
+
+
+def dnd_character_factory(id) -> models.DndCharacter:
+    character = models.DndCharacter()
+    character.id = id
+    character.create_dt = datetime.now()
+    character.name = fake.name()
+    character.level = (randint(1, 20),)
+    character.strength = randint(1, 20)
+    character.dexterity = randint(1, 20)
+    character.consitution = randint(1, 20)
+    character.intelligence = randint(1, 20)
+    character.wisdom = randint(1, 20)
+    character.charisma = randint(1, 20)
+    character.hit_dice = randint(6, 12)
+    character.proficiency = randint(2, 6)
+    character.armour_class = randint(10, 30)
+    character.weapon_proficiencies = sample(
+        [x.value for x in enums.DndWeapons], randint(1, 3)
+    )
+    character.saving_throw_proficiencies = sample(
+        [x.value for x in enums.DndAbilities], randint(2, 6)
+    )
+    character.skill_proficiencies = sample(
+        [x.value for x in enums.DndSkills], randint(2, 6)
+    )
+    character.skill_expertises = sample(
+        [x.value for x in enums.DndSkills], randint(2, 6)
+    )
+    character.tool_proficiencies = sample(
+        [x.value for x in enums.DndTools], randint(2, 6)
+    )
+    character.tool_expertises = sample([x.value for x in enums.DndTools], randint(2, 6))
+    return character
+
+
+def dnd_attack_factory(character_id: int) -> models.DndAttack:
+    attack = models.DndAttack()
+    attack.character_id = character_id
+    attack.name = fake.word()
+    attack.weapon_type = choice([x.value for x in enums.DndWeapons])
+    attack.item_bonus = randint(0, 3)
+    attack.finesse = choice([True, False])
+    attack.class_bonus = randint(0, 10)
+    attack.subclass_bonus = randint(0, 10)
+    attack.feature_bonus = randint(0, 10)
+    attack.crit_threshold = 20
+    return attack
+
+
+def dnd_damage_factory(attack_id: int) -> models.DndDamage:
+    damage = models.DndDamage()
+    damage.attack_id = attack_id
+    damage.name = fake.word()
+    damage.dice_count = randint(1, 5)
+    damage.dice_size = randint(6, 12)
+    damage.two_hand_dice_size = randint(8, 12)
+    damage.damage_type = fake.word()
+    damage.versatile = choice([True, False])
+    damage.weight = choice([x.value for x in enums.DndWeaponWeight])
+    damage.crit_dice_multiplier = 2
+    damage.additional_crit_dice = randint(0, 2)
+    damage.item_bonus = randint(0, 3)
+    damage.class_bonus = randint(0, 10)
+    damage.subclass_bonus = randint(0, 10)
+    damage.feature_bonus = randint(0, 10)
+    damage.rerolls_ones = choice([True, False])
+    damage.range = randint(60, 120)
+    return damage
+
+
+def dnd_full_character_factory(count: int = 1):
+    characters = []
+    for i in range(count):
+        id = i + 1
+        character = dnd_character_factory(id)
+        attack = dnd_attack_factory(id)
+        damage = dnd_damage_factory(id)
+        attack.damage = damage
+        character.attacks = [attack]
+        characters.append(character)
+    return characters

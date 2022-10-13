@@ -99,6 +99,42 @@ def roll_dice(dice_roll: commands.RollDice) -> list[events.DiceRolled]:
     return all_dice_rolls
 
 
+def create_dnd_character():
+    return
+
+
+def create_dnd_attack():
+    return
+
+
+def create_dnd_damage():
+    return
+
+
+def update_dnd_character():
+    return
+
+
+def update_dnd_attack():
+    return
+
+
+def update_dnd_damage():
+    return
+
+
+def delete_dnd_character():
+    return
+
+
+def delete_dnd_attack():
+    return
+
+
+def delete_dnd_damage():
+    return
+
+
 COMMAND_HANDLERS = {
     commands.RollDice: roll_dice,
 }
