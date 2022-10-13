@@ -14,7 +14,7 @@ class DndCharacter(Base):
     level: int
     strength: int
     dexterity: int
-    consitution: int
+    constitution: int
     intelligence: int
     wisdom: int
     charisma: int

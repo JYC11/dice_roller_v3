@@ -88,29 +88,37 @@ def dnd_character_factory(id) -> models.DndCharacter:
     character.level = (randint(1, 20),)
     character.strength = randint(1, 20)
     character.dexterity = randint(1, 20)
-    character.consitution = randint(1, 20)
+    character.constitution = randint(1, 20)
     character.intelligence = randint(1, 20)
     character.wisdom = randint(1, 20)
     character.charisma = randint(1, 20)
     character.hit_dice = randint(6, 12)
     character.proficiency = randint(2, 6)
     character.armour_class = randint(10, 30)
+    weapon_prof_count = randint(1, 3)
     character.weapon_proficiencies = sample(
-        [x.value for x in enums.DndWeapons], randint(1, 3)
+        [x.value for x in enums.DndWeapons], weapon_prof_count
     )
+    saving_throw_count = randint(2, 6)
     character.saving_throw_proficiencies = sample(
-        [x.value for x in enums.DndAbilities], randint(2, 6)
+        [x.value for x in enums.DndAbilities], saving_throw_count
     )
+    skill_prof_count = randint(2, 6)
     character.skill_proficiencies = sample(
-        [x.value for x in enums.DndSkills], randint(2, 6)
+        [x.value for x in enums.DndSkills], skill_prof_count
     )
+    skill_expertise_count = randint(0, 3)
     character.skill_expertises = sample(
-        [x.value for x in enums.DndSkills], randint(2, 6)
+        character.skill_proficiencies, skill_expertise_count
     )
+    tool_prof_count = randint(2, 6)
     character.tool_proficiencies = sample(
-        [x.value for x in enums.DndTools], randint(2, 6)
+        [x.value for x in enums.DndTools], tool_prof_count
     )
-    character.tool_expertises = sample([x.value for x in enums.DndTools], randint(2, 6))
+    tool_expertise_count = randint(0, 3)
+    character.tool_expertises = sample(
+        character.tool_proficiencies, tool_expertise_count
+    )
     return character
 
 
@@ -149,8 +157,8 @@ def dnd_damage_factory(attack_id: int) -> models.DndDamage:
     return damage
 
 
-def dnd_full_character_factory(count: int = 1):
-    characters = []
+def dnd_full_character_factory(count: int = 1) -> list[models.DndCharacter]:
+    characters: list[models.DndCharacter] = []
     for i in range(count):
         id = i + 1
         character = dnd_character_factory(id)

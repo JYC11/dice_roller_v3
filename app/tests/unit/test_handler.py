@@ -42,6 +42,16 @@ def test_roll_dice():
 
 
 def test_create_dice_commands():
+
     chars = dnd_full_character_factory()
     character = chars[0]
     assert character
+    attack_name = character.attacks[0].name
+    skill_name = character.skill_proficiencies[0]
+    saving_throw = character.saving_throw_proficiencies[0]
+    attack_roll = character.construct_attack_roll(attack_name)
+    skill_roll = character.construct_skill_check_roll(skill_name)
+    saving_throw_roll = character.construct_saving_throw_roll(saving_throw)
+    assert attack_roll
+    assert skill_roll
+    assert saving_throw_roll
