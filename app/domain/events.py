@@ -19,4 +19,4 @@ class DiceRolled(Event):
     total: int
     dropped_rolls: list[int]
     lower_rolls: list[int]
-    critical: Optional[bool]
+    critical: Optional[bool] = None

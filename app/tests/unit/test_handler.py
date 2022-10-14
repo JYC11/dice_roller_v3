@@ -54,3 +54,12 @@ def test_create_dice_commands():
     assert attack_roll
     assert skill_roll
     assert saving_throw_roll
+    results = roll_dice(attack_roll)
+    assert results
+    damage_roll = character.construct_damage_roll(
+        attack_result=results[0],
+        use_two_hands=False,
+        use_dual_wielding=False,
+        attack_name=attack_name,
+    )
+    assert damage_roll

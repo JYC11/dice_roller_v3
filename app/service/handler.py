@@ -93,8 +93,8 @@ def roll_dice(dice_roll: commands.RollDice) -> list[events.DiceRolled]:
             if dice_size == 20:
                 if result.dice_result >= dice_roll.crit_threshold:
                     result.critical = True
-            else:
-                result.critical = False
+                else:
+                    result.critical = False
         all_dice_rolls.append(result)
     return all_dice_rolls
 
