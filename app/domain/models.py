@@ -28,7 +28,7 @@ class DndCharacter(Base):
     tool_proficiencies: list[enums.DndTools]
     tool_expertises: list[enums.DndTools]
     attacks: list["DndAttack"]
-    character_events: deque = deque()
+    # character_events: deque = deque()
 
     @property
     def _attack_dict(self) -> dict[str, "DndAttack"]:
@@ -203,7 +203,8 @@ class DndAttack(Base):  # look into things that give advantage
     subclass_bonus: int
     feature_bonus: int
     crit_threshold: int = 20
-    damage: list["DndDamage"]
+    character: "DndCharacter"
+    damage: "DndDamage"
 
 
 class DndDamage(Base):
@@ -223,3 +224,4 @@ class DndDamage(Base):
     feature_bonus: int
     rerolls_ones: bool
     range: int
+    attack: "DndAttack"
