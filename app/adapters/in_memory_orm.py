@@ -10,13 +10,15 @@ from sqlalchemy import (
     ForeignKey,
     event,
 )
-from sqlalchemy.orm import mapper, relationship
+from sqlalchemy.orm import registry, relationship
 
-from domain import models
+from app.domain import models
 
 logger = logging.getLogger(__name__)
 
 metadata = MetaData()
+
+mapper_registry = registry(metadata=metadata)
 
 dnd_characters = Table(
     "dnd_characters",
@@ -44,7 +46,6 @@ dnd_attacks = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("create_dt", DateTime),
     Column("update_dt", DateTime),
-    Column("character_id", ForeignKey("dnd_character.id"), nullable=False),
     Column("name", String(255), nullable=False),
     Column("weapon_type", Integer, nullable=False),
     Column("item_bonus", Integer, nullable=False),
@@ -53,7 +54,8 @@ dnd_attacks = Table(
     Column("subclass_bonus", Integer, nullable=False),
     Column("feature_bonus", Integer, nullable=False),
     Column("crit_threshold", Integer, nullable=False, default=20),
-    Column("damage_id", ForeignKey("dnd_damage.id"), nullable=False),
+    Column("character_id", Integer, ForeignKey("dnd_characters.id"), nullable=False),
+    Column("damage_id", Integer, nullable=False, foreign_keys="dnd_damages.id"),
 )
 
 dnd_damages = Table(
@@ -62,7 +64,6 @@ dnd_damages = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("create_dt", DateTime),
     Column("update_dt", DateTime),
-    Column("attack_id", ForeignKey("dnd_attack.id"), nullable=False),
     Column("name", String(255), nullable=False),
     Column("dice_count", Integer, nullable=False),
     Column("dice_size", Integer, nullable=False),
@@ -77,23 +78,26 @@ dnd_damages = Table(
     Column("feature_bonus", Integer, nullable=False),
     Column("reroll_ones", Boolean, nullable=False),
     Column("range", Integer, nullable=False),
+    Column("attack_id", Integer, ForeignKey("dnd_attacks.id"), nullable=False),
 )
 
 
 def start_mappers():
     logger.info("Starting mappers")
-    mapper(
+    mapper_registry.map_imperatively(
         models.DndCharacter,
         dnd_characters,
         properties={"attacks": relationship(models.DndAttack)},
     )
-    mapper(
+    mapper_registry.map_imperatively(
         models.DndAttack,
         dnd_attacks,
-        properties={"character": relationship(models.DndCharacter)},
-        properties={"damage": relationship(models.DndDamage)},
+        properties={
+            "character": relationship(models.DndCharacter, back_populates="attacks"),
+            "damage": relationship(models.DndDamage),
+        },
     )
-    mapper(
+    mapper_registry.map_imperatively(
         models.DndDamage,
         dnd_damages,
         properties={"attack": relationship(models.DndAttack)},

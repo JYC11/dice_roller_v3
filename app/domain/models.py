@@ -194,7 +194,6 @@ class DndCharacter(Base):
 
 
 class DndAttack(Base):  # look into things that give advantage
-    character_id: int  # fk
     name: str
     weapon_type: enums.DndWeapons
     item_bonus: int
@@ -203,12 +202,13 @@ class DndAttack(Base):  # look into things that give advantage
     subclass_bonus: int
     feature_bonus: int
     crit_threshold: int = 20
+    character_id: int  # fk
     character: "DndCharacter"
+    damage_id: int  # fk
     damage: "DndDamage"
 
 
 class DndDamage(Base):
-    attack_id: int  # fk
     name: str
     dice_count: int
     dice_size: int
@@ -224,4 +224,5 @@ class DndDamage(Base):
     feature_bonus: int
     rerolls_ones: bool
     range: int
+    attack_id: int  # fk
     attack: "DndAttack"
