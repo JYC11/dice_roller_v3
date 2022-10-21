@@ -1,6 +1,9 @@
 from app.enums import enums
 from app.service.handler import roll_dice
-from app.tests.factories import roll_dice_command_factory, dnd_full_character_factory
+from app.tests.factories.input import (
+    roll_dice_command_factory,
+    dnd_full_character_factory,
+)
 
 
 def test_roll_dice():
@@ -10,7 +13,7 @@ def test_roll_dice():
         )
         results = roll_dice(cmd)
         for result in results:
-            assert len(result.dropped_roll) == 1
+            assert len(result.dropped_rolls) == 1
 
     for _ in range(10):
         cmd = roll_dice_command_factory(

@@ -4,21 +4,25 @@ from typing import Optional
 from .base import Base
 from app.enums import enums
 from app.domain import commands, events
-from app.utils.binary_search import binary_search
-from app.utils.data import constants
+from app.common.binary_search import binary_search
+from app.common.data import constants
 from app.domain import exceptions as domain_exc
 
 
 class DndCharacter(Base):
     name: str
     level: int
+    hp: int
+    race: str
+    background: str
+    class_info: str
     strength: int
     dexterity: int
     constitution: int
     intelligence: int
     wisdom: int
     charisma: int
-    hit_dice: int
+    hit_dice: str
     proficiency: int
     armour_class: int
     weapon_proficiencies: list[enums.DndWeapons]

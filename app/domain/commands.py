@@ -17,7 +17,7 @@ class RollDice(Command):
     dice_size: int
     modifier: int
     threshold: Optional[int] = None
-    crit_threshold: Optional[int] = None
+    crit_threshold: Optional[int] = 20
 
 
 @dataclass

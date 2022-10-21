@@ -52,6 +52,7 @@ def roll_dice_command_factory(
     dice_size: int | None = None,
     modifier: int | None = None,
     threshold: int | None = None,
+    crit_threshold: int | None = None,
 ):
     if not game_type:
         game_type = enums.GameType.DND.value
@@ -68,6 +69,8 @@ def roll_dice_command_factory(
         modifier = randint(-100, 100)
     if not threshold:
         threshold = randint(0, 100)
+    if not crit_threshold:
+        crit_threshold = randint(0, 100)
     cmd = commands.RollDice(
         game_type=game_type,
         prefix=prefix,
@@ -76,6 +79,7 @@ def roll_dice_command_factory(
         dice_size=dice_size,
         modifier=modifier,
         threshold=threshold,
+        crit_threshold=crit_threshold,
     )
     return cmd
 

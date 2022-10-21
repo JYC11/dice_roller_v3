@@ -8,11 +8,13 @@ from sqlalchemy import (
     Boolean,
     DateTime,
     ForeignKey,
-    event,
+    # event,
 )
 from sqlalchemy.orm import registry, relationship
 
 from app.domain import models
+from app.adapters.type_adapters import StringifiedArray
+
 
 logger = logging.getLogger(__name__)
 
@@ -27,16 +29,26 @@ dnd_characters = Table(
     Column("create_dt", DateTime),
     Column("update_dt", DateTime),
     Column("name", String(255), nullable=False),
-    Column("level", Integer, nullable=False),
-    Column("strength", Integer, nullable=False),
-    Column("dexterity", Integer, nullable=False),
-    Column("constitution", Integer, nullable=False),
-    Column("intelligence", Integer, nullable=False),
-    Column("wisdom", Integer, nullable=False),
-    Column("charisma", Integer, nullable=False),
-    Column("hit_dice", Integer, nullable=False),
+    Column("level", Integer, nullable=False, default=1),
+    Column("hp", Integer, nullable=False, default=1),
+    Column("race", String(255), nullable=False),
+    Column("background", String(255), nullable=False),
+    Column("class_info", String(255), nullable=False),
+    Column("strength", Integer, nullable=False, default=1),
+    Column("dexterity", Integer, nullable=False, default=1),
+    Column("constitution", Integer, nullable=False, default=1),
+    Column("intelligence", Integer, nullable=False, default=1),
+    Column("wisdom", Integer, nullable=False, default=1),
+    Column("charisma", Integer, nullable=False, default=1),
+    Column("hit_dice", String(255), nullable=False),
     Column("proficiency", Integer, nullable=False),
     Column("armour_class", Integer, nullable=False),
+    Column("weapon_proficiencies", StringifiedArray, default=[]),
+    Column("saving_throw_proficiencies", StringifiedArray, default=[]),
+    Column("skill_proficiencies", StringifiedArray, default=[]),
+    Column("skill_expertises", StringifiedArray, default=[]),
+    Column("tool_proficiencies", StringifiedArray, default=[]),
+    Column("tool_expertises", StringifiedArray, default=[]),
 )
 
 
