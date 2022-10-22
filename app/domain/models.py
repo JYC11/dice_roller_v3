@@ -208,7 +208,6 @@ class DndAttack(Base):  # look into things that give advantage
     crit_threshold: int = 20
     character_id: int  # fk
     character: "DndCharacter"
-    damage_id: int  # fk
     damage: "DndDamage"
 
 

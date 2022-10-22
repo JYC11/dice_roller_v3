@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.domain import models
+from app.tests.factories.dnd import DndAttackFactory, DndCharacterFactory
 
 
 def test_mappers(db: Session):
@@ -16,3 +17,8 @@ def test_dnd_character_can_load_lines(db: Session):
     )
     all = db.query(models.DndCharacter).all()
     assert all
+
+
+def test_dnd_character_factory(db: Session):
+    chars = [DndCharacterFactory() for _ in range(10)]
+    assert True

@@ -14,6 +14,7 @@ from sqlalchemy.orm import registry, relationship
 
 from app.domain import models
 from app.adapters.type_adapters import StringifiedArray
+from app.enums import enums
 
 
 logger = logging.getLogger(__name__)
@@ -59,15 +60,19 @@ dnd_attacks = Table(
     Column("create_dt", DateTime),
     Column("update_dt", DateTime),
     Column("name", String(255), nullable=False),
-    Column("weapon_type", Integer, nullable=False),
+    Column(
+        "weapon_type",
+        String(255),
+        nullable=False,
+        default=enums.DndWeapons.SIMPLE.value,
+    ),
     Column("item_bonus", Integer, nullable=False),
     Column("finesse", Boolean, nullable=False),
     Column("class_bonus", Integer, nullable=False),
     Column("subclass_bonus", Integer, nullable=False),
     Column("feature_bonus", Integer, nullable=False),
     Column("crit_threshold", Integer, nullable=False, default=20),
-    Column("character_id", Integer, ForeignKey("dnd_characters.id"), nullable=False),
-    Column("damage_id", Integer, nullable=False, foreign_keys="dnd_damages.id"),
+    Column("character_id", Integer, ForeignKey("dnd_characters.id"), nullable=True),
 )
 
 dnd_damages = Table(
@@ -82,15 +87,20 @@ dnd_damages = Table(
     Column("two_hand_dice_size", Integer, nullable=False),
     Column("damage_type", String(255), nullable=False),
     Column("versatile", Boolean, nullable=False),
-    Column("weight", String(255), nullable=False),
+    Column(
+        "weight",
+        String(255),
+        nullable=False,
+        default=enums.DndWeaponWeight.MEDIUM.value,
+    ),
     Column("crit_dice_multiplier", Integer, nullable=False, default=2),
     Column("additional_crit_dice", Integer, nullable=False, default=0),
     Column("class_bonus", Integer, nullable=False),
     Column("subclass_bonus", Integer, nullable=False),
     Column("feature_bonus", Integer, nullable=False),
-    Column("reroll_ones", Boolean, nullable=False),
+    Column("reroll_ones", Boolean, nullable=False, default=False),
     Column("range", Integer, nullable=False),
-    Column("attack_id", Integer, ForeignKey("dnd_attacks.id"), nullable=False),
+    Column("attack_id", Integer, ForeignKey("dnd_attacks.id"), nullable=True),
 )
 
 
@@ -99,7 +109,12 @@ def start_mappers():
     mapper_registry.map_imperatively(
         models.DndCharacter,
         dnd_characters,
-        properties={"attacks": relationship(models.DndAttack)},
+        properties={
+            "attacks": relationship(
+                models.DndAttack,
+                cascade="all, delete-orphan",
+            )
+        },
     )
     mapper_registry.map_imperatively(
         models.DndAttack,
