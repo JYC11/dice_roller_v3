@@ -1,7 +1,6 @@
 import random
 
 import factory
-from sqlalchemy.orm import Session
 from faker import Faker
 
 from app.common.db import SessionLocal
