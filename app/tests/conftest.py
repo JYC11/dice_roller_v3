@@ -2,9 +2,8 @@ import sys
 from typing import Generator
 
 import pytest
-from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session, clear_mappers
-from sqlalchemy.orm import Session, close_all_sessions
+from sqlalchemy.orm import close_all_sessions
 
 from app.common.db import engine
 from app.adapters.in_memory_orm import start_mappers, metadata
@@ -61,3 +60,15 @@ def db(session_factory) -> Generator:
         raise e
     finally:
         session_inst.close()
+
+
+@pytest.fixture(scope="function")
+def base_query() -> str:
+    return """
+    SELECT
+        *
+    FROM
+        dnd_characters dc
+    LEFT JOIN dnd_attacks da ON dc.id = da.character_id
+    LEFT JOIN dnd_damages dd ON da.id = dd.attack_id
+    """

@@ -2,7 +2,7 @@ import re
 from typing import Optional
 
 from app.domain.commands import RollDice
-from app.enums.enums import Commands, DiceRegexes, CompileValidationResults, GameType
+from app.enums import Commands, DiceRegexes, CompileValidationResults, GameType
 
 
 # DICE COMPILER
