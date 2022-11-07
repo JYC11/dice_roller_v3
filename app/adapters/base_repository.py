@@ -1,12 +1,9 @@
 import abc
 from typing import Any, Sequence, TypeVar, Generic, Type
 
-from sqlalchemy import and_, or_, func
 from sqlalchemy.orm import Session, Query
-from sqlalchemy.orm.attributes import InstrumentedAttribute
 
 from app.domain.base import Base
-from .exception import InvalidColumn, InvalidConditionGiven, AttributeNotExist
 
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -117,7 +114,6 @@ class SqlAlchemyRepository(Generic[ModelType], AbstractRepository):
         return query
 
     def add(self, item: ModelType) -> None:
-        # obj = self.model(**item.dict())
         self.db.add(item)
 
     def get(self, ident: Any) -> ModelType | None:
