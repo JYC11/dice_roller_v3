@@ -32,7 +32,7 @@ class DndCharacter(Base):
     tool_proficiencies: list[enums.DndTools]
     tool_expertises: list[enums.DndTools]
     attacks: list["DndAttack"]
-    # character_events: deque = deque()
+    events: list[events.Event] = []
 
     @property
     def _attack_dict(self) -> dict[str, "DndAttack"]:

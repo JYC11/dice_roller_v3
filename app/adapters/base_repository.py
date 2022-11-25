@@ -1,44 +1,106 @@
 import abc
-from typing import Any, Sequence, TypeVar, Generic, Type
+from typing import Any, TypeVar, Generic, Type
 
-from sqlalchemy.orm import Session, Query
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from app.domain.base import Base
+from app.enums import enums
 
 
 ModelType = TypeVar("ModelType", bound=Base)
 
 
 class AbstractRepository(abc.ABC):
-    @abc.abstractmethod
-    def add(self, item: Any) -> None:
+    def __init__(self):
+        self.seen = set()
+
+    def add(self) -> None:
         ...
 
-    @abc.abstractmethod
     def get(self, ident: Any) -> Any:
+        return self._get(ident)
+
+    def list(self) -> Any:
+        return self._list()
+
+    def remove(self, obj: Any) -> Any:
+        return self._remove(obj)
+
+    def query_builder(self, kwargs):
+        self._query_builder(**kwargs)
+        return self
+
+    def query_reset(self, kwargs):
+        self._query_reset(**kwargs)
+        return self
+
+    def filter(self, *args, logical_operator: enums.LogicalOperatorEnum, **kwargs):
+        self._filter(*args, logical_operator=logical_operator, **kwargs)
+        return self
+
+    def aggregate(self, func_name, criteria):
+        self._aggregate(func_name, criteria)
+        return self
+
+    def group_by(self, *criteria):
+        self._group_by(*criteria)
+        return self
+
+    def having(self, *criteria):
+        self._having(*criteria)
+        return self
+
+    def order_by(self, criteria):
+        self._order_by(criteria)
+        return self
+
+    def paginate(self, page, items_per_page):
+        self._paginate(page, items_per_page)
+        return self
+
+    @abc.abstractmethod
+    def _get(self, ident: Any) -> Any:
         ...
 
     @abc.abstractmethod
-    def remove(self, ident: Any) -> Any:
+    def _list(self) -> Any:
         ...
 
     @abc.abstractmethod
-    def list(
-        self,
-        ordering: dict[str | None] | None = None,
-        **filters,
-    ) -> Sequence[Any]:
+    def _remove(self, obj: Any) -> Any:
         ...
 
     @abc.abstractmethod
-    def paginated_list(
-        self,
-        page: int,
-        items_per_page: int,
-        search_query: dict[str, Any] | None,
-        ordering: str | None,
-        **kwargs,
-    ) -> tuple[Sequence[Any], int]:
+    def _query_builder(self, kwargs):
+        ...
+
+    @abc.abstractmethod
+    def _query_reset(self, kwargs):
+        ...
+
+    @abc.abstractmethod
+    def _filter(self, *args, logical_operator, **kwargs):
+        ...
+
+    @abc.abstractmethod
+    def _aggregate(self, func_name, criteria):
+        ...
+
+    @abc.abstractmethod
+    def _group_by(self, criteria):
+        ...
+
+    @abc.abstractmethod
+    def _having(self, criteria):
+        ...
+
+    @abc.abstractmethod
+    def _order_by(self, criteria):
+        ...
+
+    @abc.abstractmethod
+    def _paginate(self, page, items_per_page):
         ...
 
 
@@ -46,108 +108,48 @@ class SqlAlchemyRepository(Generic[ModelType], AbstractRepository):
     def __init__(self, db: Session, model: Type[ModelType]):
         self.db = db
         self.model = model
-        self._base_query = self.db.query(self.model)
+        self._base_query = select(self.model)
 
-    def _search_query(self, query: Query, search_query: dict[str, Any] | None):
-        if search_query is None:
-            return query
+    # TODO: complete!
+    def _get(self, ident: Any) -> Any:
+        ...
 
-        for search_type, keyword in search_query.items():
-            attribute = getattr(self.model, search_type)
-            query.filter(attribute.ilike(f"%{keyword}"))
-        return query
+    # TODO: complete!
+    def _list(self) -> Any:
+        ...
 
-    def _order_query(self, query: Query, ordering: str | None = None):
-        if not ordering:
-            return query
-        return query.order_by(*self._get_ordering_fields(ordering))
+    # TODO: complete!
+    def _remove(self, obj: Any) -> Any:
+        ...
 
-    def _get_ordering_fields(self, ordering_query_str: str | None) -> list:
-        """
-        Return ordering expression list applied ASC or DESC for order_by of sqlalchemy
-        """
-        # Preprocessing query string
-        ordering_list = ordering_query_str.split(",") if ordering_query_str else []
+    # TODO: complete!
+    def _query_builder(self, kwargs):
+        ...
 
-        ordering_fields = []
-        try:
-            default_ordering_by_create_dt = getattr(self.model, "create_dt")
-        except AttributeError:
-            default_ordering_by_create_dt = getattr(self.model, "id")
-        for col_name in ordering_list:
-            if col_name:
-                """
-                regular ordering
-                1. first check desc or asc by checking '-'
-                2. check if ordering on nested json
-                    col_name_json_check > implements nested json field ordering
-                """
-                desc = False
-                if col_name.startswith("-"):
-                    desc = True
-                    col_name = col_name[1:]
-                col_name_json_check = col_name.split("__")
+    # TODO: complete!
+    def _query_reset(self, kwargs):
+        ...
 
-                model_column = getattr(self.model, col_name_json_check[0])
-                if len(col_name_json_check) == 2:
-                    model_column = model_column[col_name_json_check[1]]
-                if desc:
-                    ordering_fields.append(model_column.desc())
-                else:
-                    ordering_fields.append(model_column.asc())
+    # TODO: complete!
+    def _filter(self, *args, logical_operator: enums.LogicalOperatorEnum, **kwargs):
+        ...
 
-        # Default: create_dt.desc()
-        if not ordering_fields:
-            ordering_fields.append(default_ordering_by_create_dt.desc())
-        ordering_fields.append("id")
-        return ordering_fields
+    # TODO: complete!
+    def _aggregate(self, func_name, criteria):
+        ...
 
-    def _list(
-        self,
-        search_query: dict[str, Any] | None = None,
-        ordering: str | None = None,
-        **kwargs,
-    ) -> Query:
-        query = self._base_query.filter_by(**kwargs)
-        query = self._search_query(query=query, search_query=search_query)
-        query = query.order_by(*self._get_ordering_fields(ordering))
-        return query
+    # TODO: complete!
+    def _group_by(self, criteria):
+        ...
 
-    def add(self, item: ModelType) -> None:
-        self.db.add(item)
+    # TODO: complete!
+    def _having(self, criteria):
+        ...
 
-    def get(self, ident: Any) -> ModelType | None:
-        return self._base_query.filter(self.model.id == ident).first()
+    # TODO: complete!
+    def _order_by(self, criteria):
+        ...
 
-    def paginated_list(
-        self,
-        page: int = 1,
-        items_per_page: int = 20,
-        search_query: dict[str, Any] = None,
-        ordering: str | None = None,
-        **kwargs,
-    ) -> tuple[Sequence[ModelType], int]:
-        query = self._list(search_query=search_query, ordering=ordering, **kwargs)
-        total = query.count()
-        if items_per_page < 0:
-            items_per_page = total
-        offset = (page - 1) * items_per_page
-        query = self._order_query(query=query, ordering=ordering)
-        query = query.offset(offset).limit(items_per_page)
-        return query.all(), total
-
-    def list(
-        self,
-        search_query: dict[str, Any] = None,
-        ordering: str | None = None,
-        **filters,
-    ) -> Sequence[ModelType]:
-        return self._list(search_query=search_query, ordering=ordering, **filters).all()
-
-    def remove(self, ident: Any) -> None:
-        db_obj = self.db.get(self.model, ident)
-        self.db.delete(db_obj)
-        return
-
-    def commit(self):
-        self.db.commit()
+    # TODO: complete!
+    def _paginate(self, page, items_per_page):
+        ...
