@@ -64,7 +64,7 @@ class AbstractRepository(abc.ABC):
         return self
 
     @abc.abstractmethod
-    def _get(self, ident: Any) -> Any:
+    def _get(self) -> Any:
         ...
 
     @abc.abstractmethod
@@ -73,10 +73,6 @@ class AbstractRepository(abc.ABC):
 
     @abc.abstractmethod
     def _remove(self, obj: Any) -> Any:
-        ...
-
-    @abc.abstractmethod
-    def _query_builder(self, kwargs):
         ...
 
     @abc.abstractmethod
@@ -118,25 +114,17 @@ class SqlAlchemyRepository(Generic[ModelType], AbstractRepository):
         self.model = model
         self._base_query = select(self.model)
 
-    # TODO: complete!
-    def _get(self, ident: Any) -> Any:
-        ...
+    def _get(self) -> Any:
+        return self.db.query(self._base_query).first()
 
-    # TODO: complete!
     def _list(self) -> Any:
-        ...
+        return self.db.query(self._base_query).all()
 
-    # TODO: complete!
-    def _remove(self, obj: Any) -> Any:
-        ...
+    def _remove(self, obj: ModelType) -> Any:
+        self.db.delete(obj)
 
-    # TODO: complete!
-    def _query_builder(self, kwargs):
-        ...
-
-    # TODO: complete!
     def _query_reset(self, kwargs):
-        ...
+        self._base_query = select(self.model)
 
     # TODO: complete!
     def _filter(self, *args, logical_operator: enums.LogicalOperatorEnum, **kwargs):
