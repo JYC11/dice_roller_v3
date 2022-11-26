@@ -39,6 +39,10 @@ class AbstractRepository(abc.ABC):
         self._filter(*args, logical_operator=logical_operator, **kwargs)
         return self
 
+    def join(self, model, on, how):
+        self._join(model, on, how)
+        return self
+
     def aggregate(self, func_name, criteria):
         self._aggregate(func_name, criteria)
         return self
@@ -81,6 +85,10 @@ class AbstractRepository(abc.ABC):
 
     @abc.abstractmethod
     def _filter(self, *args, logical_operator, **kwargs):
+        ...
+
+    @abc.abstractmethod
+    def _join(self, model, on, how):
         ...
 
     @abc.abstractmethod
@@ -132,6 +140,10 @@ class SqlAlchemyRepository(Generic[ModelType], AbstractRepository):
 
     # TODO: complete!
     def _filter(self, *args, logical_operator: enums.LogicalOperatorEnum, **kwargs):
+        ...
+
+    # TODO: complete!
+    def _join(self, model, on, how):
         ...
 
     # TODO: complete!

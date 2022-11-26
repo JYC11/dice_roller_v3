@@ -5,7 +5,10 @@ from sqlalchemy import text
 
 from sqlalchemy.orm import Session
 
-from app.adapters.base_repository import AbstractRepository, SqlAlchemyRepository
+from app.adapters.repository import (
+    AbstractRepository,
+    SqlAlchemyRepository,
+)
 from app.common.db import SessionLocal
 
 

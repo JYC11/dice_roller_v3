@@ -1,1 +1,1 @@
-from ..base_repository import SqlAlchemyRepository
+from .base import *  # noqa
