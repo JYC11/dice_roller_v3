@@ -1,5 +1,5 @@
 import sys
-from app.enums.enums import Commands, CompileValidationResults
+from app.enums import Commands, CompileValidationResults
 from app.compiler import compiler
 
 

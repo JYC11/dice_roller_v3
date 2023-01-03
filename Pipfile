@@ -5,11 +5,14 @@ name = "pypi"
 
 [packages]
 sqlalchemy = "*"
-faker = "*"
+pydantic = "*"
 
 [dev-packages]
 pytest = "*"
 black = "*"
+pytest-asyncio = "*"
+faker = "*"
+factory-boy = "*"
 
 [requires]
 python_version = "3.10"

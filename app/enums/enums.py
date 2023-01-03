@@ -1,6 +1,40 @@
 from enum import Enum
 
 
+class LogicalOperatorEnum(str, Enum):
+    AND = "and"
+    OR = "or"
+
+
+class QueryBuilderTypeEnum(str, Enum):
+    NUM = "num"
+    STR = "str"
+    BOOL = "bool"
+    DATE = "date"
+    DATETIME = "datetime"
+    NULL = "null"
+
+
+class FilterOperatorEnum(str, Enum):
+    EQ = "eq"
+    NOT_EQ = "not_eq"
+    GT = "gt"
+    GTE = "gte"
+    LT = "lt"
+    LTE = "lte"
+    IN = "in"
+    NOT_IN = "not_in"
+    BTW = "btw"
+    LIKE = "like"
+    STARTS_WITH = "starts_with"
+    ENDS_WITH = "ends_with"
+
+
+class OrderOperatorEnum(str, Enum):
+    ASC = "asc"
+    DESC = "desc"
+
+
 class GameType(Enum):
     DND = "dnd"
 

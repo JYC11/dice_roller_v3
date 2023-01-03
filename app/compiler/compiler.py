@@ -2,7 +2,7 @@ import re
 from typing import Optional
 
 from app.domain.commands import RollDice
-from app.enums.enums import Commands, DiceRegexes, CompileValidationResults
+from app.enums import Commands, DiceRegexes, CompileValidationResults, GameType
 
 
 # DICE COMPILER
@@ -78,6 +78,7 @@ def create_roll_dice_command(raw_user_input: str) -> RollDice:
     modifier = get_modifier(raw_user_input)
     threshold = get_threshold(raw_user_input)
     return RollDice(
+        game_type=GameType.DND.value,
         prefix=prefix,
         multiplier=multiplier,
         dice_count=dice_count,

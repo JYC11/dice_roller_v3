@@ -4,21 +4,25 @@ from typing import Optional
 from .base import Base
 from app.enums import enums
 from app.domain import commands, events
-from app.utils.binary_search import binary_search
-from app.utils.data import constants
+from app.common.binary_search import binary_search
+from app.common.data import constants
 from app.domain import exceptions as domain_exc
 
 
 class DndCharacter(Base):
     name: str
     level: int
+    hp: int
+    race: str
+    background: str
+    class_info: str
     strength: int
     dexterity: int
     constitution: int
     intelligence: int
     wisdom: int
     charisma: int
-    hit_dice: int
+    hit_dice: str
     proficiency: int
     armour_class: int
     weapon_proficiencies: list[enums.DndWeapons]
@@ -28,7 +32,7 @@ class DndCharacter(Base):
     tool_proficiencies: list[enums.DndTools]
     tool_expertises: list[enums.DndTools]
     attacks: list["DndAttack"]
-    # character_events: deque = deque()
+    events: list[events.Event] = []
 
     @property
     def _attack_dict(self) -> dict[str, "DndAttack"]:
@@ -194,7 +198,6 @@ class DndCharacter(Base):
 
 
 class DndAttack(Base):  # look into things that give advantage
-    character_id: int  # fk
     name: str
     weapon_type: enums.DndWeapons
     item_bonus: int
@@ -203,12 +206,12 @@ class DndAttack(Base):  # look into things that give advantage
     subclass_bonus: int
     feature_bonus: int
     crit_threshold: int = 20
+    character_id: int  # fk
     character: "DndCharacter"
     damage: "DndDamage"
 
 
 class DndDamage(Base):
-    attack_id: int  # fk
     name: str
     dice_count: int
     dice_size: int
@@ -224,4 +227,5 @@ class DndDamage(Base):
     feature_bonus: int
     rerolls_ones: bool
     range: int
+    attack_id: int  # fk
     attack: "DndAttack"

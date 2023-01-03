@@ -2,10 +2,9 @@ import logging
 from collections import deque
 from typing import Callable, Type
 
-from app.domain import commands, events
 from app.domain.commands import Command
 from app.domain.events import Event
-from app.service import unit_of_work
+from app.service.unit_of_work import AbstractUnitOfWork
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +14,9 @@ Message = Event | Command
 class MessageBus:
     def __init__(
         self,
-        uow: unit_of_work.AbstractUnitOfWork,
-        event_handlers: dict[Type[events.Event], list[Callable]],
-        command_handlers: dict[Type[commands.Command], Callable],
+        uow: AbstractUnitOfWork,
+        event_handlers: dict[Type[Event], list[Callable]],
+        command_handlers: dict[Type[Command], Callable],
     ):
         self.uow = uow
         self.event_handlers = event_handlers

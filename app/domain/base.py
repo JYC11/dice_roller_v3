@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Sequence, Optional
+from .events import Event
 
 from sqlalchemy.orm.exc import DetachedInstanceError
 
