@@ -1,2 +1,0 @@
-class AttackNameNotFound(Exception):
-    pass
